@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.kroger.scrs</groupId>
+  <artifactId>scrs-project-seed</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <properties>
+    <java.version>11</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <resource.delimiter>@</resource.delimiter> <!-- delimiter that doesn't clash with Spring ${} placeholders -->
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <main.basedir>${project.basedir}</main.basedir>
+  </properties>
+
+  <modules>
+    <module>service</module>
+    <module>e2e</module>
+  </modules>
+
+
+  <repositories>
+    <!-- Necessary to resolve confluent dependencies -->
+    <repository>
+      <id>confluent</id>
+      <url>http://packages.confluent.io/maven/</url>
+    </repository>
+
+    <!--
+      Configure connection to Azure Maven SCRS registry:
+      https://dev.azure.com/KrogerTechnology/SCRS/_packaging?_a=connect&feed=scrsregistry
+     -->
+    <repository>
+      <id>scrsregistry</id>
+      <url>https://pkgs.dev.azure.com/KrogerTechnology/SCRS/_packaging/scrsregistry/maven/v1</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+  </repositories>
+
+  <distributionManagement>
+    <repository>
+      <id>scrsFeed</id>
+      <url>https://pkgs.dev.azure.com/KrogerTechnology/SCRS/_packaging/scrsregistry/maven/v1</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </distributionManagement>
+</project>

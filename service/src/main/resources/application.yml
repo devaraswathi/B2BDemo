@@ -1,0 +1,86 @@
+
+server.port: 8080
+
+spring:
+  # TODO: Change application name. Use kabab-case.
+  application.name: scrs-example-service
+  profiles.active: dev  # This will be overridden by SPRING_ACTIVE_PROFILES environment variable.
+
+    # These settings should be migrated under the appropriate module configuration instead
+    # of application global if possible.
+  kafka:
+    bootstrap-servers:
+      - localhost:9092
+    properties:
+      #request.timeout.ms: 20000
+      #retry.backoff.ms: 500
+
+      # Schema registry
+      schema.registry.url: http://localhost:8081
+      # If you are consuming a specific record from the topic you need to add the following line as well
+      specific.avro.reader: true
+
+    # DESP consumer
+    consumer:
+      group-id: group-1
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+
+    # DESP producer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+
+# TODO: Need to determine what environment variables can be included post-deployment
+info:
+  app:
+    name: ${spring.application.name}
+    profiles: ${spring.profiles.active}
+    artifactId: ${artifactId:UNKNOWN}
+    version: ${APP_VERSION:UNKNOWN}
+  build:
+    commit: ${buildVcsNumber:UNKNOWN}
+    number: ${buildNumber:UNKNOWN}
+  host:
+    name: ${host.name:UNKNOWN}
+
+management.endpoints.web.exposure:
+    include: "*"
+    exclude: shutdown
+
+azure:
+  application-insights:
+    # Enable/Disable tracking. Default value: true.
+    enabled: true
+    # Enable/Disable web modules. Default value: true.
+    web.enabled: ${azure.application-insights.enabled}
+    # Obtain from Azure portal Application Insights dashboard.
+    # !!!IMPORTANT!!! This value should be regenerated and configured as a
+    # secret when key vault integration is understood.
+    instrumentation-key: 9f5abc27-c5b2-4543-b5dd-506be7140f29
+    channel:
+      in-process:
+        # Interval to send telemetry. Must be between 1 and 300. Default value: 5 seconds.
+        flush-interval-in-seconds: 1
+        # Enable/Disable developer mode, all telemetry will be sent immediately without batching.
+        # Significantly affects performance and should be used only in developer environment. Default value: false.
+        developer-mode: true
+
+logging.level:
+    root: info
+    com.kroger.scrs: info
+
+# --- Input Adapters ---
+osp-client:
+  base-url: https://example.com
+
+# --- Output Adapters ---
+desp-kafka-producer:
+  broker-address: http://localhost:9092
+
+webhook-validator:
+  signature: H9FcRW0isRRMPgHZaa/+Vb4ueSnAKiKoxYtiaPVgQoKAw==
+  signatureKey: 9f4d72ee-18f2-469d-8a5e-a6b9fa8aa2cc
+

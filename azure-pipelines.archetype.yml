@@ -1,0 +1,42 @@
+# Placeholder for Azure pipeline needed to produce Maven archetype jar and install
+# in artifact repository (i.e. Nexus, Artifactory, Azure Feed)
+
+# This file will not exist in the generated seed projects and is needed just to make
+# the project seed archetype available for execution.
+
+trigger:
+  - master
+  - features/*
+
+variables:
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+stages:
+  - stage: Build
+    displayName: Build stage
+    jobs:
+      - job: Build
+        displayName: Archetype and Build
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+
+          - task: MavenAuthenticate@0
+            inputs:
+              artifactsFeeds: 'scrsregistry'
+
+          - task: ShellScript@2
+            inputs:
+              scriptPath: installArchetypeLocally.sh
+
+          - task: Maven@3
+            inputs:
+                mavenPomFile: 'target/generated-sources/archetype/pom.xml'
+                goals: 'deploy'
+                publishJUnitResults: false
+                javaHomeOption: 'JDKVersion'
+                mavenVersionOption: 'Default'
+                mavenAuthenticateFeed: true
+                effectivePomSkip: false
+                sonarQubeRunAnalysis: false

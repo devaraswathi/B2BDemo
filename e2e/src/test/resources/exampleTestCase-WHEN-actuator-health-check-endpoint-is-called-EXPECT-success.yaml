@@ -1,0 +1,12 @@
+---
+# A simple test example that calls the actuator/health endpoint and verifies the response has a status of 200 and a body with status UP
+scenarioName: exampleTestCase-WHEN-actuator-health-check-endpoint-is-called-EXPECT-success.yaml
+steps:
+  - name: Example_Test_Case_To_Check_Actuator_Health
+    url: /actuator/health
+    method: GET
+    request: {}
+    verify:
+      status: 200
+      body:
+        status: UP
